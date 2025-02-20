@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Page</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f3f3f3; /* Original background color */
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #4CAF50; /* Original text color */
+      margin-bottom: 30px;
+    }
+
+    .order-container {
+      max-width: 700px;
+      background-color: white;
+      margin: 0 auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="file"],
+    .form-group textarea,
+    .form-group input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: 'Arial', sans-serif;
+      font-size: 16px;
+    }
+
+    .form-group input[type="file"] {
+      padding: 3px;
+    }
+
+    .form-group button,
+    .button-container button {
+      padding: 10px 20px;
+      background-color: #4CAF50; /* Original button color */
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .form-group button:hover,
+    .button-container button:hover {
+      background-color: #45a049; /* Original hover color */
+    }
+
+    .button-container {
+      text-align: center;
+    }
+
+    #preview {
+      display: none;
+      margin-top: 20px;
+      max-width: 200px; /* Decreased max-width */
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Placeholder styling */
+    ::placeholder {
+      font-weight: bold;
+    }
+
+    /* For Firefox */
+    :-moz-placeholder {
+      font-weight: bold;
+    }
+
+    /* For Internet Explorer */
+    :-ms-input-placeholder {
+      font-weight: bold;
+    }
+
+    /* For Edge */
+    ::-ms-input-placeholder {
+      font-weight: bold;
+    }
+
+    /* For Chrome, Safari, and Opera */
+    ::-webkit-input-placeholder {
+      font-weight: bold;
+    }
+
+    /* Popup Notification */
+    .popup {
+      visibility: hidden;
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #4CAF50; /* Original background color */
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      text-align: center;
+      font-size: 18px;
+      animation: fadeInOut 2s;
+    }
+
+    .popup.show {
+      visibility: visible;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Order Page</h1>
+  <div class="order-container">
+    <form id="orderForm">
+      <div class="form-group">
+        <input type="text" id="customer-name" name="name" placeholder="Enter your name" required>
+      </div>
+      <div class="form-group">
+        <input type="email" id="customer-email" name="email" placeholder="Enter your email" required>
+      </div>
+      <div class="form-group">
+        <textarea id="pickup-address" name="pickup_address" rows="4" placeholder="Enter pickup address" required></textarea>
+      </div>
+      <div class="form-group">
+        <textarea id="dropoff-address" name="dropoff_address" rows="4" placeholder="Enter dropoff address" required></textarea>
+      </div>
+      <div class="form-group">
+        <textarea id="order-description" name="order_description" rows="4" placeholder="Enter order description" required></textarea>
+      </div>
+      <div class="form-group">
+        <input type="date" id="pickup-date" name="pickup_date" required>
+      </div>
+      <div class="form-group">
+        <input type="file" id="picture" name="picture" accept="image/*" capture="camera" style="display: none;">
+        <button type="button" id="capture-button">Capture Photo</button>
+        <img id="preview" src="#" alt="Product Photo Preview">
+      </div>
+      <div class="button-container">
+        <button type="submit">Place Order</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="popup" class="popup">Order has been placed</div>
+
+  <script>
+    // Form validation and submission handling
+    document.getElementById('orderForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevents form from submitting normally
+
+      // Retrieve form values
+      const name = document.getElementById('customer-name').value.trim();
+      const email = document.getElementById('customer-email').value.trim();
+      const pickupAddress = document.getElementById('pickup-address').value.trim();
+      const dropoffAddress = document.getElementById('dropoff-address').value.trim();
+      const orderDescription = document.getElementById('order-description').value.trim();
+      const pickupDate = document.getElementById('pickup-date').value;
+
+      // Validate inputs
+      if (!name || !email || !pickupAddress || !dropoffAddress || !orderDescription || !pickupDate) {
+        alert('Please fill out all required fields.');
+        return;
+      }
+
+      // Show popup notification
+      const popup = document.getElementById('popup');
+      popup.classList.add('show');
+      setTimeout(() => {
+        popup.classList.remove('show');
+      }, 2000);
+
+      // Reset the form after submission
+      document.getElementById('orderForm').reset();
+      document.getElementById('preview').style.display = 'none';
+    });
+
+    // Handle capture button click
+    document.getElementById('capture-button').addEventListener('click', function() {
+      document.getElementById('picture').click();
+    });
+
+    // Handle file input change
+    document.getElementById('picture').addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById('preview');
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  </script>
+</body>
+</html>

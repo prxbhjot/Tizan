@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings Page</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(to right, #2c3e50, #bdc3c7); /* Formal gradient background */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh; /* Ensure content extends properly */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* Align at top of the page */
+      font-family: Arial, sans-serif;
+      color: #333;
+      padding: 20px 0; /* Padding for better aesthetics */
+    }
+
+    .settings-container {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 800px;
+      animation: fadeIn 1s ease-out, slideIn 1s ease-out; /* Add fade-in and slide-in animation */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      0% {
+        transform: translateY(-50px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #4CAF50;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      color: #4CAF50;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="file"],
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      background-color: #f9f9f9;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="file"]:focus,
+    select:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+      outline: none;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      width: 100%;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Dark Mode */
+    body.dark-mode {
+      background-color: #333;
+      color: white;
+    }
+
+    body.dark-mode .settings-container {
+      background-color: #444;
+      color: white;
+    }
+
+    body.dark-mode .notification-preferences label {
+      background-color: #555;
+      color: white;
+      border-color: #666;
+    }
+
+    /* Loading Animation */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loading .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-left-color: #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Notification Preferences */
+    .notification-preferences {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .notification-preferences label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .notification-preferences input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+    }
+
+    .notification-preferences label:hover {
+      border-color: #3498db;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+
+    .notification-preferences label.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Image Preview */
+    #profile-picture-preview {
+      display: block;
+      margin-top: 10px;
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Popup Notification */
+    .popup {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+    }
+
+    .popup.show {
+      visibility: visible;
+      animation: fadeInRight 0.5s, fadeOutRight 0.5s 2.5s;
+    }
+
+    @keyframes fadeInRight {
+      from {
+        right: -300px;
+        opacity: 0;
+      }
+      to {
+        right: 0;
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeOutRight {
+      from {
+        right: 0;
+        opacity: 1;
+      }
+      to {
+        right: -300px;
+        opacity: 0;
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .settings-container {
+        padding: 20px;
+      }
+
+      button {
+        padding: 8px 16px;
+      }
+
+      .switch {
+        width: 50px;
+        height: 28px;
+      }
+
+      .slider:before {
+        height: 22px;
+        width: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="loading">
+    <div class="spinner"></div>
+  </div>
+  <div class="settings-container">
+    <h1>Settings Page</h1>
+    <!-- Profile Settings -->
+    <div class="section">
+      <h2>Profile Settings</h2>
+      <label for="old-username">Old Username</label>
+      <input type="text" id="old-username" placeholder="Enter old username">
+
+      <label for="username">New Username</label>
+      <input type="text" id="username" placeholder="Enter new username">
+
+      <label for="old-password">Old Password</label>
+      <input type="password" id="old-password" placeholder="Enter old password">
+
+      <label for="password">New Password</label>
+      <input type="password" id="password" placeholder="Enter new password">
+
+      <label for="profile-picture">Upload Profile Picture</label>
+      <input type="file" id="profile-picture">
+      <img id="profile-picture-preview" src="#" alt="Profile Picture Preview" style="display: none;">
+    </div>
+
+    <!-- Theme Customization -->
+    <div class="section">
+      <h2>Theme Customization</h2>
+      <div class="theme-toggle">
+        <label for="dark-mode-toggle">Enable Dark Mode</label>
+        <label class="switch">
+          <input type="checkbox" id="dark-mode-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Notification Settings -->
+    <div class="section">
+      <h2>Notification Preferences</h2>
+      <div class="notification-preferences">
+        <label><input type="checkbox" checked> Email Notifications</label>
+        <label><input type="checkbox"> SMS Notifications</label>
+        <label><input type="checkbox"> Push Notifications</label>
+        <label><input type="checkbox" id="block-notifications"> Block Notifications</label>
+      </div>
+    </div>
+
+    <!-- Language Selection -->
+    <div class="section">
+      <h2>Language Preferences</h2>
+      <label for="language-select">Choose Language</label>
+      <select id="language-select">
+        <option value="en">English</option>
+        <option value="es">Hindi</option>
+        
+      </select>
+    </div>
+
+    <!-- Account Management -->
+    <div class="section">
+      <h2>Account Management</h2>
+      <div class="button-group">
+        <button id="apply-settings-btn">Apply Settings</button>
+        <button id="reset-settings-btn">Reset to Default Settings</button>
+        <button id="deactivate-btn">Deactivate Account</button>
+        <button id="delete-btn" style="background-color: #e74c3c;">Delete Account</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="popup" class="popup">Settings have been applied successfully.</div>
+
+  <script>
+    // Handle Dark Mode Toggle
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    darkModeToggle.addEventListener('change', function () {
+      document.body.classList.toggle('dark-mode', darkModeToggle.checked);
+    });
+
+    // Handle Block Notifications Toggle
+    const blockNotificationsToggle = document.getElementById('block-notifications');
+    blockNotificationsToggle.addEventListener('change', function () {
+      const notificationCheckboxes = document.querySelectorAll('.notification-preferences input[type="checkbox"]:not(#block-notifications)');
+      notificationCheckboxes.forEach(checkbox => {
+        const label = checkbox.parentElement;
+        if (blockNotificationsToggle.checked) {
+          checkbox.disabled = true;
+          label.classList.add('disabled');
+        } else {
+          checkbox.disabled = false;
+          label.classList.remove('disabled');
+        }
+      });
+    });
+
+    // Simple Confirmations for Account Actions
+    document.getElementById('apply-settings-btn').addEventListener('click', () => {
+      const popup = document.getElementById('popup');
+      popup.textContent = 'Settings have been applied successfully.';
+      popup.classList.add('show');
+      setTimeout(() => {
+        popup.classList.remove('show');
+      }, 3000);
+    });
+
+    document.getElementById('reset-settings-btn').addEventListener('click', () => {
+      const popup = document.getElementById('popup');
+      popup.textContent = 'Settings have been reset to default.';
+      popup.classList.add('show');
+      setTimeout(() => {
+        popup.classList.remove('show');
+      }, 3000);
+
+      // Reset all settings to default values
+      document.getElementById('old-username').value = '';
+      document.getElementById('username').value = '';
+      document.getElementById('old-password').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('profile-picture').value = '';
+      document.getElementById('profile-picture-preview').style.display = 'none';
+      document.getElementById('dark-mode-toggle').checked = false;
+      document.body.classList.remove('dark-mode');
+      document.querySelectorAll('.notification-preferences input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+        checkbox.disabled = false;
+        checkbox.parentElement.classList.remove('disabled');
+      });
+      document.getElementById('language-select').value = 'en';
+    });
+
+    document.getElementById('deactivate-btn').addEventListener('click', () => {
+      alert('Are you sure you want to deactivate your account?');
+    });
+
+    document.getElementById('delete-btn').addEventListener('click', () => {
+      alert('Warning! Deleting your account is permanent.');
+    });
+
+    // Loading Animation
+    window.addEventListener('load', () => {
+      document.querySelector('.loading').style.display = 'none';
+    });
+
+    // Profile Picture Preview
+    document.getElementById('profile-picture').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById('profile-picture-preview');
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "tizan-website",
+  "version": "1.0.0",
+  "description": "Online Platform for House Loaders",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongoose": "^6.0.13",
+    "razorpay": "^1.8.5",
+    "dotenv": "^10.0.0",
+    "bcrypt": "^5.0.1"
+  }
+}

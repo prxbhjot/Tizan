@@ -1,0 +1,21 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #F3F4F6;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.hero {
+    background: #1E3A8A;
+    color: white;
+    padding: 60px 0;
+    text-align: center;
+}
+
+footer {
+    background-color: #1E3A8A;
+    color: white;
+    padding: 20px 0;
+}
